@@ -37,10 +37,9 @@
           <span>{{ scope.row.admin_id }}</span>
         </template>
       </el-table-column> -->
-      <el-table-column label="图片" width="110" align="center">
+      <el-table-column label="图片" width="180" align="center">
         <template slot-scope="scope">
-          <img :src="scope.row.img_url" alt="">
-
+          <img :src="scope.row.img_url" height="150px" alt="">
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="发布状态" width="110" align="center">
@@ -106,7 +105,9 @@ export default {
       })
     },
     edit(sco,data){
-      console.log(sco,data)
+      var id = sco.row.id;
+      this.$router.push('/catearticle/editArticle/' + id)
+
     },
     async del(sco,data){
       try{

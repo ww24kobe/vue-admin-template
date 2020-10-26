@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-
+    <h2>{{ id }}</h2>
     <el-form ref="form"  :model="form" label-width="120px">
 
       <el-form-item
@@ -62,7 +62,7 @@
 
 <script>
   import {
-    addArticle
+    updArticle,getOneArticle
   } from "@/api/article"
   export default {
     data() {
@@ -78,6 +78,10 @@
         },
         action: process.env.VUE_APP_BASE_API + "/upload",
       }
+    },
+    props:['id'],
+    created() {
+      this.getArticleData();
     },
     methods: {
       handleAvatarSuccess(res, file) {
@@ -126,6 +130,13 @@
           message: 'cancel!',
           type: 'warning'
         })
+      },
+      async getArticleData(){
+        var res = await getOneArticle(this.id);
+        res.data.status = res.data.status == 1 ? true : false;
+        // Object.assign(this.form,res.data)
+        // console.log(res.data.status)
+        // console.log(this.form)
       }
     }
   }

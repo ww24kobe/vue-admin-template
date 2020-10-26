@@ -80,7 +80,15 @@ export const constantRoutes = [
         path: 'addArticle',
         name: 'addArticle',
         component: () => import('@/views/article/addIndex'),
-        meta: { title: '添加管理', icon: '' },
+        meta: { title: '添加文章', icon: '' },
+        hidden: true
+      },
+      {
+        path: 'editArticle/:id',
+        name: 'editArticle',
+        props: true,
+        component: () => import('@/views/article/editIndex'),
+        meta: { title: '修改文章', icon: '' },
         hidden: true
       }
     ]
@@ -191,7 +199,7 @@ export const constantRoutes = [
       }
     ]
   },
-  
+
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
