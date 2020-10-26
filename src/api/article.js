@@ -38,3 +38,10 @@ export function updArticle(params) {
     data:params
   })
 }
+
+export function getCate() {
+  return request({
+    url: '/getcate',
+    method: 'get'
+  })
+}

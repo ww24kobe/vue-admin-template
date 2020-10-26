@@ -24,17 +24,14 @@
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
       </el-form-item>
-      <el-form-item label="所属分类"
-        prop="cat_id"
-        :rules="[
-            { required: true, message: '请选择分类' },
-          ]"
-       >
-        <el-select v-model="form.cat_id" placeholder="请选择分类">
-          <el-option label="体育" value="1" />
-          <el-option label="财经" value="2" />
-        </el-select>
-      </el-form-item>
+    <el-form-item label="所属分类" prop="cat_id" :rules="[
+          { required: true, message: '请选择分类' },
+        ]">
+      <el-select v-model="form.cat_id" placeholder="请选择分类">
+        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+        </el-option>
+      </el-select>
+    </el-form-item>
       <el-form-item label="发布时间"
         prop="add_date"
         :rules="[
@@ -62,7 +59,7 @@
 
 <script>
   import {
-    updArticle,getOneArticle
+    updArticle,getOneArticle,getCate
   } from "@/api/article"
   export default {
     data() {
@@ -77,11 +74,13 @@
           img_url: "" // 提交后图片路径
         },
         action: process.env.VUE_APP_BASE_API + "/upload",
+        options: [],
       }
     },
     props:['id'],
     created() {
       this.getArticleData();
+      this.getCateData();
     },
     methods: {
       handleAvatarSuccess(res, file) {
@@ -111,7 +110,7 @@
       onSubmit(formName) {
         this.$refs[formName].validate(async (valid) => {
           if (valid) {
-            var result = await addArticle(this.form);
+            var result = await updArticle(this.form);
             console.log(result)
             this.$message({
               message: result.message,
@@ -134,9 +133,21 @@
       async getArticleData(){
         var res = await getOneArticle(this.id);
         res.data.status = res.data.status == 1 ? true : false;
-        // Object.assign(this.form,res.data)
-        // console.log(res.data.status)
-        // console.log(this.form)
+        Object.assign(this.form,res.data)
+        this.form.imageurl = res.data.img_url;
+        console.log(this.form)
+      },
+      async getCateData() {
+        var {
+          data
+        } = await getCate();
+        data.map(v=>{
+          this.options.push({
+            value: v.id,
+            label: v.cat_name
+          })
+        })
+        console.log(data)
       }
     }
   }

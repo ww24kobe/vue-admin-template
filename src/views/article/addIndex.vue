@@ -1,46 +1,33 @@
 <template>
   <div class="app-container">
 
-    <el-form ref="form"  :model="form" label-width="120px">
+    <el-form ref="form" :model="form" label-width="120px">
 
-      <el-form-item
-        label="标题"
-        prop="title"
-        :rules="[
+      <el-form-item label="标题" prop="title" :rules="[
             { required: true, message: '请输入标题' }
-          ]"
-        >
-        <el-input v-model="form.title" placeholder="文章标题"/>
+          ]">
+        <el-input v-model="form.title" placeholder="文章标题" />
       </el-form-item>
-      <el-form-item label="封面"
-        prop="img_url"
-        :rules="[
+      <el-form-item label="封面" prop="img_url" :rules="[
             { required: true, message: '需要上传图片'},
-          ]"
-      >
+          ]">
         <el-upload class="avatar-uploader" :action="action" :show-file-list="false" :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload">
           <img v-if="form.imageurl" :src="form.imageurl" class="avatar">
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
       </el-form-item>
-      <el-form-item label="所属分类"
-        prop="cat_id"
-        :rules="[
+      <el-form-item label="所属分类" prop="cat_id" :rules="[
             { required: true, message: '请选择分类' },
-          ]"
-       >
+          ]">
         <el-select v-model="form.cat_id" placeholder="请选择分类">
-          <el-option label="体育" value="1" />
-          <el-option label="财经" value="2" />
+          <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+          </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="发布时间"
-        prop="add_date"
-        :rules="[
+      <el-form-item label="发布时间" prop="add_date" :rules="[
             { required: true, message: '发布时间'},
-          ]"
-      >
+          ]">
         <!-- <el-col :span="10"> -->
         <el-date-picker v-model="form.add_date" type="datetime" placeholder="发布时间" />
         <!-- </el-col> -->
@@ -62,7 +49,8 @@
 
 <script>
   import {
-    addArticle
+    addArticle,
+    getCate
   } from "@/api/article"
   export default {
     data() {
@@ -77,7 +65,11 @@
           img_url: "" // 提交后图片路径
         },
         action: process.env.VUE_APP_BASE_API + "/upload",
+        options: [],
       }
+    },
+    created() {
+      this.getCateData();
     },
     methods: {
       handleAvatarSuccess(res, file) {
@@ -126,6 +118,18 @@
           message: 'cancel!',
           type: 'warning'
         })
+      },
+      async getCateData() {
+        var {
+          data
+        } = await getCate();
+        data.map(v=>{
+          this.options.push({
+            value: v.id,
+            label: v.cat_name
+          })
+        })
+        console.log(data)
       }
     }
   }
